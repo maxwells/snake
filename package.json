@@ -1,14 +1,15 @@
 {
   "name": "snake",
   "main": "./lib/snake",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Snake game for Github's Atom text editor",
-  "activationEvents": ["snake:toggle"],
+  "activationEvents": [
+    "snake:toggle"
+  ],
   "repository": "https://github.com/maxwells/snake",
   "license": "MIT",
   "engines": {
     "atom": ">0.50.0"
   },
-  "dependencies": {
-  }
+  "dependencies": {}
 }
