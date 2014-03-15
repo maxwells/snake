@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "description": "Snake game for Github's Atom text editor",
   "activationEvents": ["snake:toggle"],
-  "repository": "https://github.com/atom/snake",
+  "repository": "https://github.com/maxwells/snake",
   "license": "MIT",
   "engines": {
     "atom": ">0.50.0"
