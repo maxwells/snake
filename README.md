@@ -1,5 +1,32 @@
-# snake package
+# Snake atom package
 
-A short description of your package.
+Snake game for Github's Atom text editor.
 
-![A screenshot of your spankin' package](https://f.cloud.github.com/assets/69169/2290250/c35d867a-a017-11e3-86be-cd7c5bf3ff9b.gif)
+Supports the following configuration options (in your global Config file):
+
+```cson
+'snake':
+  # width of the game board
+  # -> defaults to 20
+  'width': 40
+  # height of the game board
+  # -> defaults to 20
+  'height': 10
+  # interval in ms between snake movements
+  # -> defaults to 200
+  'startingInterval': 150
+  # interval multiplier upon eating food
+  # -> higher means slower speed increase
+  # -> defaults to 0.95
+  'intervalMultiplier': 0.93
+  # number of food pieces on the board at any point in time.
+  # -> defaults to 1
+  'numFood': 2
+```
+
+Default keybindings are:
+
+- `cmd-alt-shift-s` to start/stop
+- `cmd-alt-shift-r` to reset after game over
+
+![Screenshot](https://github.com/maxwells/snake/snake.gif)
