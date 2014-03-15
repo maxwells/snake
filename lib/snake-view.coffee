@@ -23,6 +23,9 @@ class SnakeView extends View
   initialize: (serializeState) ->
     atom.workspaceView.command "snake:toggle", => @toggle()
 
+  onReset: =>
+    @initializeBoard()
+
   onLeft: =>
     @game.moveLeft()
 
@@ -49,25 +52,36 @@ class SnakeView extends View
     atom.workspaceView.eachEditorView (editor) ->
       editor.toggleClass 'snake'
 
-  reset: ->
+  destroy: ->
     @game.deactivate()
     @game.removeAllListeners 'update'
+    @stopListening()
+    @toggleOnEditor()
+
+  resetKeyBinding: ->
+    keyBinding = atom.keymap.keyBindingsForCommand('snake:reset')
+    keyBinding? and keyBinding[0]? and keyBinding[0].keystroke
 
   onGameOver: =>
-    @display.html " game over, man <br/>#{@game.getBoard()}"
+    @display.html " game over, man; score: #{@game.getScore()} <br/>"
+    keyBinding = @resetKeyBinding()
+    @display.append " reset with #{keyBinding} <br />" if keyBinding?
+    @display.append @game.getBoard()
+    atom.workspaceView.command 'snake:reset', @onReset
 
   initializeBoard: ->
-    @game = new SnakeGame(20, 20)
+    width = atom.config.get('snake.width') or 20
+    height = atom.config.get('snake.height') or 20
+    @game = new SnakeGame(width, height)
     @game.on 'update', @updateDisplay
     @game.on 'died', @onGameOver
     @game.activate()
+    atom.workspaceView.off 'snake:reset'
 
   toggle: ->
     if @hasParent()
       @detach()
-      @stopListening()
-      @toggleOnEditor()
-      @reset()
+      @destroy()
     else
       atom.workspaceView.appendToRight(this)
       @listenForEvents()

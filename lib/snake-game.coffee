@@ -16,7 +16,7 @@ class SnakeGame extends Events
     @moveRight()
 
   activate: () ->
-    @currentInterval ?= 200
+    @currentInterval ?= atom.config.get('snake.startingInterval') or 200
     @interval = setInterval @moveCurrentDir, @currentInterval
 
   deactivate: ->
@@ -24,21 +24,23 @@ class SnakeGame extends Events
 
   increaseSpeed: ->
     @deactivate()
-    @currentInterval *= 0.9
+    @currentInterval *= atom.config.get('snake.intervalMultiplier') or 0.95
     @activate()
 
+  # Create the game board
   initializeBoard: ->
     @board = [] # x => y
     for i in [0..@width - 1]
       @board[i] = []
       for j in [0..@height - 1]
         @board[i][j] = new BoardComponent(BoardComponent.EMPTY)
-    @addFood()
+    @addFood(atom.config.get('snake.numFood') or 1)
 
-  addFood: ->
-    pos = @randPos()
-    pos = @randPos() while @board[pos.x][pos.y].type != BoardComponent.EMPTY
-    @board[pos.x][pos.y] = new BoardComponent(BoardComponent.FOOD)
+  addFood: (numFood = 1) ->
+    for i in [0..numFood - 1]
+      pos = @randPos()
+      pos = @randPos() while @board[pos.x][pos.y].type != BoardComponent.EMPTY
+      @board[pos.x][pos.y] = new BoardComponent(BoardComponent.FOOD)
 
   randPos: ->
     x: Math.floor(Math.random() * @width), y: Math.floor(Math.random() * @height)
@@ -48,22 +50,34 @@ class SnakeGame extends Events
     clone.push yArray.slice(0) for yArray in @board
     clone
 
+  getScore: ->
+    @snake.length - 2
+
   getBoard: ->
     output = ""
 
     clone = @cloneBoard()
 
     for snakeComponent in @snake
-      clone[snakeComponent.x][snakeComponent.y] = snakeComponent
+      if @isInBounds snakeComponent.x, snakeComponent.y
+        clone[snakeComponent.x][snakeComponent.y] = snakeComponent
 
-    for yArray, i in clone
-      for boardComponent, j in yArray
+    output += @border()
+
+    for i in [0..@height-1]
+      for j in [0..@width-1]
         output += clone[j][i].toString()
       output += "<br />"
 
+    output += @border()
+
     output
 
-  # return true if has eaten food this round
+  border: ->
+    output = ""
+    output += "-" for i in [0..@width - 1]
+    output + "<br />"
+
   handleFoodCollision: ->
     head = @snake[0]
     if @board[head.x][head.y].type == BoardComponent.FOOD
@@ -89,11 +103,14 @@ class SnakeGame extends Events
 
   move: (delX, delY) ->
     head = @snake[0]
-    console.log head, delX, delY
-    @snake.unshift new SnakeComponent(head.x + delX, head.y + delY)
-    @snake.pop() unless @handleFoodCollision()
 
-    @die() if @hasDeathCollision()
+    # Add one to the front of the snake
+    @snake.unshift new SnakeComponent(head.x + delX, head.y + delY)
+
+    return @die() if @hasDeathCollision()
+
+    # remove one from the back unless has eaten food
+    @snake.pop() unless @handleFoodCollision()
 
     @emit 'update'
 

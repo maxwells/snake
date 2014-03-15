@@ -14,3 +14,4 @@
   'up'   : 'snake:up'
   'right': 'snake:right'
   'down' : 'snake:down'
+  'cmd-alt-shift-r': 'snake:reset'
