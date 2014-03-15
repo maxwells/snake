@@ -29,4 +29,4 @@ Default keybindings are:
 - `cmd-alt-shift-s` to start/stop
 - `cmd-alt-shift-r` to reset after game over
 
-![Screenshot](https://github.com/maxwells/snake/snake.gif)
+![Screenshot](https://raw.github.com/maxwells/snake/master/snake.gif)
