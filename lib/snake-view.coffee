@@ -25,18 +25,17 @@ class SnakeView extends View
 
   onLeft: =>
     @game.moveLeft()
-    @display.html @game.getBoard()
 
   onRight: =>
     @game.moveRight()
-    @display.html @game.getBoard()
 
   onUp: =>
     @game.moveUp()
-    @display.html @game.getBoard()
 
   onDown: =>
     @game.moveDown()
+
+  updateDisplay: =>
     @display.html @game.getBoard()
 
   # Returns an object that can be retrieved when package is activated
@@ -51,10 +50,17 @@ class SnakeView extends View
       editor.toggleClass 'snake'
 
   reset: ->
-    @game = null
+    @game.deactivate()
+    @game.removeAllListeners 'update'
+
+  onGameOver: =>
+    @display.html " game over, man <br/>#{@game.getBoard()}"
 
   initializeBoard: ->
     @game = new SnakeGame(20, 20)
+    @game.on 'update', @updateDisplay
+    @game.on 'died', @onGameOver
+    @game.activate()
 
   toggle: ->
     if @hasParent()
