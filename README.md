@@ -4,7 +4,7 @@ Snake game for Github's Atom text editor. Just a weekend project - no real plans
 
 ### Installing
 
-Use the Atom package manager, which can be found in the Settings view or run apm install vim-mode from the command line.
+Use the Atom package manager, which can be found in the Settings view or run apm install snake from the command line.
 
 ### Configuration
 
